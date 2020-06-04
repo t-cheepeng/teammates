@@ -9,4 +9,7 @@ public class CommentSearchResultData extends SessionResultsData {
     private FeedbackSessionData feedbackSession;
 
     //TODO: Build data from CommentSearchResultsData input
+    public CommentSearchResultData() {
+        super();
+    }
 }

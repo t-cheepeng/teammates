@@ -30,7 +30,7 @@ public class SessionResultsData extends ApiOutput {
 
     private final List<QuestionOutput> questions = new ArrayList<>();
 
-    private SessionResultsData() {
+    protected SessionResultsData() {
         // use factory method instead
     }
 
