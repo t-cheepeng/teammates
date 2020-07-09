@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 import { CourseService } from '../../../services/course.service';
 import { InstructorService } from '../../../services/instructor.service';
 import { StatusMessageService } from '../../../services/status-message.service';
@@ -56,6 +57,8 @@ export class InstructorCoursesPageComponent implements OnInit {
   SortBy: typeof SortBy = SortBy;
   SortOrder: typeof SortOrder = SortOrder;
 
+  isCoursesLoading: boolean = true;
+
   isRecycleBinExpanded: boolean = false;
   canDeleteAll: boolean = true;
   canRestoreAll: boolean = true;
@@ -86,21 +89,30 @@ export class InstructorCoursesPageComponent implements OnInit {
     this.activeCourses = [];
     this.archivedCourses = [];
     this.softDeletedCourses = [];
-    this.courseService.getAllCoursesAsInstructor('active').subscribe((resp: Courses) => {
-      for (const course of resp.courses) {
-        this.instructorService.loadInstructorPrivilege({ courseId: course.courseId })
-        .subscribe((instructorPrivilege: InstructorPrivilege) => {
-          const canModifyCourse: boolean = instructorPrivilege.canModifyCourse;
-          const canModifyStudent: boolean = instructorPrivilege.canModifyStudent;
-          const activeCourse: CourseModel = Object.assign({}, { course, canModifyCourse, canModifyStudent });
-          this.activeCourses.push(activeCourse);
-        }, (error: ErrorMessageOutput) => {
-          this.statusMessageService.showErrorToast(error.error.message);
-        });
-      }
-    }, (resp: ErrorMessageOutput) => {
-      this.statusMessageService.showErrorToast(resp.error.message);
-    });
+    this.courseService.getAllCoursesAsInstructor('active')
+      .subscribe((resp: Courses) => {
+        if (!resp.courses.length) {
+          this.isCoursesLoading = false;
+        }
+        for (const course of resp.courses) {
+          forkJoin(
+              this.instructorService.loadInstructorPrivilege({ courseId: course.courseId })
+              .pipe(tap((instructorPrivilege: InstructorPrivilege) => {
+                const canModifyCourse: boolean = instructorPrivilege.canModifyCourse;
+                const canModifyStudent: boolean = instructorPrivilege.canModifyStudent;
+                const activeCourse: CourseModel =
+                    Object.assign({}, { course, canModifyCourse, canModifyStudent });
+                this.activeCourses.push(activeCourse);
+              }, (error: ErrorMessageOutput) => {
+                this.statusMessageService.showErrorToast(error.error.message);
+              })),
+          ).pipe(
+              finalize(() => this.isCoursesLoading = false),
+          ).subscribe();
+        }
+      }, (resp: ErrorMessageOutput) => {
+        this.statusMessageService.showErrorToast(resp.error.message);
+      });
 
     this.courseService.getAllCoursesAsInstructor('archived').subscribe((resp: Courses) => {
       for (const course of resp.courses) {
