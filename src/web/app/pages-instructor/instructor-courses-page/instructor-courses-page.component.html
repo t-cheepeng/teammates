@@ -148,6 +148,14 @@
     </table>
     <p *ngIf="!activeCourses.length">No records found.</p>
   </div>
+
+  <ng-template #loadingspinner>
+    <div class="loading-spinner-container">
+      <tm-loading-spinner></tm-loading-spinner>
+      <div class="text-secondary">Loading courses...</div>
+    </div>
+  </ng-template>
+
 </div>
 
 <div class="course-section" *ngIf="archivedCourses.length">

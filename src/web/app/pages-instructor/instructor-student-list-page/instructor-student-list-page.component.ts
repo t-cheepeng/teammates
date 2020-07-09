@@ -19,6 +19,8 @@ interface CourseTab {
   studentList: StudentListRowModel[];
   hasTabExpanded: boolean;
   hasStudentLoaded: boolean;
+  isLoading: boolean;
+  numOfSectionsStillLoading: number;
   stats: CourseStatistics;
 }
 
