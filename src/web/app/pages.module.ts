@@ -5,7 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Intent } from '../types/api-request';
 import { ErrorReportModule } from './components/error-report/error-report.module';
 import { LoaderBarModule } from './components/loader-bar/loader-bar.module';
-import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { LoadingSpinnerModule } from './components/loading-spinner/loading-spinner.module';
 import { StatusMessageModule } from './components/status-message/status-message.module';
 import { ToastModule } from './components/toast/toast.module';
 import { PageNotFoundModule } from './page-not-found/page-not-found.module';
@@ -87,6 +87,7 @@ const routes: Routes = [
     CommonModule,
     LoaderBarModule,
     NgbModule,
+    LoadingSpinnerModule,
     ErrorReportModule,
     PageNotFoundModule,
     StatusMessageModule,
@@ -104,7 +105,6 @@ const routes: Routes = [
     StudentPageComponent,
     InstructorPageComponent,
     AdminPageComponent,
-    LoadingSpinnerComponent,
   ],
 })
 export class PagesModule {}
