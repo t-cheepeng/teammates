@@ -70,7 +70,7 @@ public class InstructorCoursesPageE2ETest extends BaseE2ETestCase {
         coursesPage.verifyNotModifiable(courses[0].getId());
 
         ______TS("add new course");
-        CourseAttributes[] activeCoursesWithNewCourse = { courses[0], newCourse };
+        CourseAttributes[] activeCoursesWithNewCourse = { newCourse, courses[0] };
         String[] expectedLinks = { Const.WebPageURIs.INSTRUCTOR_COURSE_ENROLL_PAGE + "?courseid=" + newCourse.getId(),
                 Const.WebPageURIs.INSTRUCTOR_COURSE_EDIT_PAGE + "?courseid=" + newCourse.getId() };
         coursesPage.addCourse(newCourse);
