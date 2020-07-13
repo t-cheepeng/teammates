@@ -70,7 +70,7 @@ public class InstructorCoursesPageE2ETest extends BaseE2ETestCase {
         coursesPage.verifyNotModifiable(courses[0].getId());
 
         ______TS("add new course");
-        CourseAttributes[] activeCoursesWithNewCourse = { newCourse, courses[0] };
+        CourseAttributes[] activeCoursesWithNewCourse = { courses[0], newCourse };
         String[] expectedLinks = { Const.WebPageURIs.INSTRUCTOR_COURSE_ENROLL_PAGE + "?courseid=" + newCourse.getId(),
                 Const.WebPageURIs.INSTRUCTOR_COURSE_EDIT_PAGE + "?courseid=" + newCourse.getId() };
         coursesPage.addCourse(newCourse);
@@ -117,6 +117,7 @@ public class InstructorCoursesPageE2ETest extends BaseE2ETestCase {
         newCourse.deletedAt = null;
         coursesPage.restoreCourse(newCourse.getId());
 
+        activeCoursesWithNewCourse = { newCourse, courses[0] };
         coursesPage.verifyStatusMessage("The course " + newCourse.getId() + " has been restored.");
         coursesPage.verifyNumDeletedCourses(1);
         coursesPage.sortByCreationDate();
