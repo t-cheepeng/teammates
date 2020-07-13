@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LoadingSpinnerModule } from '../../components/loading-spinner/loading-spinner.module';
 import { InstructorStudentListPageComponent } from './instructor-student-list-page.component';
 import { InstructorStudentListPageModule } from './instructor-student-list-page.module';
 
@@ -12,6 +13,7 @@ describe('InstructorStudentListPageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        LoadingSpinnerModule,
         HttpClientTestingModule,
         RouterTestingModule,
         FormsModule,
