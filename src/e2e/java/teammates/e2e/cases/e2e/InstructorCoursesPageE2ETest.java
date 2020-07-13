@@ -117,11 +117,11 @@ public class InstructorCoursesPageE2ETest extends BaseE2ETestCase {
         newCourse.deletedAt = null;
         coursesPage.restoreCourse(newCourse.getId());
 
-        activeCoursesWithNewCourse = { newCourse, courses[0] };
+        CourseAttributes[] tester = { newCourse, courses[0] };
         coursesPage.verifyStatusMessage("The course " + newCourse.getId() + " has been restored.");
         coursesPage.verifyNumDeletedCourses(1);
         coursesPage.sortByCreationDate();
-        coursesPage.verifyActiveCoursesDetails(activeCoursesWithNewCourse);
+        coursesPage.verifyActiveCoursesDetails(tester);
         assertFalse(isCourseInRecycleBin(newCourse.getId()));
 
         ______TS("move archived course to recycle bin");
