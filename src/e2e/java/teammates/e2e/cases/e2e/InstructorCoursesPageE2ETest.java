@@ -156,7 +156,7 @@ public class InstructorCoursesPageE2ETest extends BaseE2ETestCase {
 
         ______TS("restore all");
         coursesPage.moveArchivedCourseToRecycleBin(courses[1].getId());
-        CourseAttributes[] activeCoursesWithRestored = { courses[2], courses[0] };
+        CourseAttributes[] activeCoursesWithRestored = { courses[0], courses[2] };
         coursesPage.restoreAllCourses();
 
         coursesPage.verifyStatusMessage("All courses have been restored.");
