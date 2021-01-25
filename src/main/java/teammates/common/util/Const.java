@@ -121,6 +121,9 @@ public final class Const {
 
         public static final String FEEDBACK_RESULTS_GROUPBYSECTION = "frgroupbysection";
 
+        public static final String FEEDBACK_RESPONSE_STATISTICS_START = "frsstart";
+        public static final String FEEDBACK_RESPONSE_STATISTICS_END = "frsend";
+
         public static final String PREVIEWAS = "previewas";
 
         public static final String STUDENT_ID = "googleid";
@@ -283,6 +286,7 @@ public final class Const {
         public static final String QUESTION = URI_PREFIX + "/question";
         public static final String QUESTION_RECIPIENTS = URI_PREFIX + "/question/recipients";
         public static final String RESPONSES = URI_PREFIX + "/responses";
+        public static final String RESPONSES_STATISTICS = URI_PREFIX + "/responses/statistics";
         public static final String HAS_RESPONSES = URI_PREFIX + "/hasResponses";
         public static final String JOIN = URI_PREFIX + "/join";
         public static final String JOIN_REMIND = URI_PREFIX + "/join/remind";
