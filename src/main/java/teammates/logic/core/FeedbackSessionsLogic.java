@@ -938,4 +938,7 @@ public final class FeedbackSessionsLogic {
         return session.isVisible() && !questionsToAnswer.isEmpty();
     }
 
+    public int getFeedbackSessionStatistics(int startTime, int endTime) {
+        return 5;
+    }
 }

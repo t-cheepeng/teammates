@@ -9,10 +9,9 @@ public class FeedbackResponseStatData extends ApiOutput {
 
     private final int number;
 
-    public FeedbackResponseStatData() {
-        this.responseTimeStamp = 0;
-        this.number = 0;
-        // TODO: Create new attributes or reuse existing attribute
+    public FeedbackResponseStatData(long responseTimeStamp, int number) {
+        this.responseTimeStamp = responseTimeStamp;
+        this.number = number;
     }
 
     public long getResponseTimeStamp() {

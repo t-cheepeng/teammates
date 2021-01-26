@@ -10,9 +10,8 @@ public class FeedbackResponseStatsData extends ApiOutput {
 
     private final List<FeedbackResponseStatData> feedbackResponseStats;
 
-    public FeedbackResponseStatsData() {
-        // TODO: Expected format for frontend consumption
-        feedbackResponseStats = new ArrayList<>();
+    public FeedbackResponseStatsData(List<FeedbackResponseStatData> feedbackResponseStats) {
+        this.feedbackResponseStats = feedbackResponseStats;
     }
 
     public List<FeedbackResponseStatData> getFeedbackResponseStats() {
