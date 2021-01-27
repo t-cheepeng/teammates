@@ -6,6 +6,7 @@ import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
 import com.googlecode.objectify.annotation.Translate;
 import com.googlecode.objectify.annotation.Unindex;
+import teammates.common.util.Assumption;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -62,6 +63,11 @@ public class FeedbackResponseStatistic extends BaseEntity {
         if (this.count + 1 > this.count) {
             this.count++;
         }
+    }
+
+    public void decrementCount() {
+        Assumption.assertTrue(count > 0);
+        this.count--;
     }
 
     public Instant getTime() {
