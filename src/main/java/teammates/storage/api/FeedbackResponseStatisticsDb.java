@@ -20,6 +20,7 @@ import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Assumption;
 import teammates.common.util.Const;
 import teammates.common.util.TimeHelper;
+import teammates.storage.entity.FeedbackResponse;
 import teammates.storage.entity.FeedbackResponseStatistic;
 
 /**
@@ -48,6 +49,10 @@ public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseSta
         return getFeedbackResponseStatistic(time) != null;
     }
 
+    public boolean isFeedbackResponseStatisticCountOne(Instant time) {
+        return getFeedbackResponseStatistic(time).getCount() == 1;
+    }
+
     public FeedbackResponseStatisticAttributes incrementFeedbackResponseStatistic(Instant time) {
         FeedbackResponseStatistic frs = getFeedbackResponseStatistic(time);
         frs.incrementCount();
@@ -55,8 +60,24 @@ public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseSta
         return makeAttributes(frs);
     }
 
+    public void decrementFeedbackResponseStatistic(Instant time) {
+        FeedbackResponseStatistic frs = getFeedbackResponseStatistic(time);
+        frs.decrementCount();
+        saveEntity(frs);
+    }
+
     public FeedbackResponseStatistic getFeedbackResponseStatistic(Instant time) {
         return load().id(FeedbackResponseStatistic.generateId(time)).now();
+    }
+    /**
+     *
+     * Deletes a feedback response statistic.
+     */
+    public void deleteFeedbackResponseStatistic(Instant time) {
+        Assumption.assertNotNull(time);
+        long statisticId = FeedbackResponseStatistic.generateId(time);
+
+        deleteEntity(Key.create(FeedbackResponseStatistic.class, statisticId));
     }
 
     @Override

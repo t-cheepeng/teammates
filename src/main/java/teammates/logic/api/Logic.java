@@ -1362,6 +1362,11 @@ public class Logic {
         return feedbackResponseStatisticsLogic.createFeedbackResponseStatistic(time);
     }
 
+    public void deleteFeedbackResponseStatistic(Instant time) {
+        Assumption.assertNotNull(time);
+        feedbackResponseStatisticsLogic.deleteFeedbackResponseStatistic(time);
+    }
+
     public String getSectionForTeam(String courseId, String teamName) {
         Assumption.assertNotNull(courseId);
         Assumption.assertNotNull(teamName);

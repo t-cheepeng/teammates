@@ -65,6 +65,18 @@ public final class FeedbackResponseStatisticsLogic {
         }
     }
 
+    /**
+     * Decrements the feedback response statistic using the timestamp.
+     * If the feedback response statistic has only one count, delete the entity from the database.
+     */
+    public void deleteFeedbackResponseStatistic(Instant time) {
+        if (frsDb.isFeedbackResponseStatisticCountOne(time)) { // count is going to be zero, delete
+            frsDb.deleteFeedbackResponseStatistic(time);
+        } else { // decrement
+            frsDb.decrementFeedbackResponseStatistic(time);
+        }
+    }
+
     public static FeedbackResponseStatisticsLogic inst() {
         return instance;
     }
