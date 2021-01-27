@@ -31,14 +31,6 @@ public class GetFeedbackResponseStatistics extends AdminOnlyAction {
         Instant start = Instant.ofEpochMilli(startTimestamp);
         Instant end = Instant.ofEpochMilli(endTimestamp);
 
-        // TODO: this is for testing create only, delete this later
-        try {
-            logic.createFeedbackResponseStatistic(Instant.now());
-        } catch (Exception e) {
-            System.out.println("@@@ PROBLEM CREATING FEEDBACK RESPONSES STATISTIC @@@");
-            System.out.println(e);
-        }
-
         List<FeedbackResponseStatisticAttributes> statsAttributes = logic.getFeedbackResponseStatistics(start, end);
 
         List<FeedbackResponseStatData> statsData = new ArrayList<>();
