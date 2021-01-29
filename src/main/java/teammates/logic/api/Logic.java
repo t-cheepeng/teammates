@@ -1356,11 +1356,11 @@ public class Logic {
         return feedbackResponseStatisticsLogic.getFeedbackResponseStatistics(start, end);
     }
 
-    public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int count)
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int totalCount)
             throws InvalidParametersException, EntityAlreadyExistsException {
         Assumption.assertNotNull(time);
-        Assumption.assertTrue(count >= 0);
-        return feedbackResponseStatisticsLogic.setFeedbackResponseStatistic(time, count);
+        Assumption.assertTrue(totalCount >= 0);
+        return feedbackResponseStatisticsLogic.setFeedbackResponseStatistic(time, totalCount);
     }
 
     /**
