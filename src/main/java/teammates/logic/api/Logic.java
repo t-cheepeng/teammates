@@ -1356,17 +1356,6 @@ public class Logic {
         return feedbackResponseStatisticsLogic.getFeedbackResponseStatistics(start, end);
     }
 
-    public FeedbackResponseStatisticAttributes createFeedbackResponseStatistic(Instant time)
-            throws InvalidParametersException, EntityAlreadyExistsException {
-        Assumption.assertNotNull(time);
-        return feedbackResponseStatisticsLogic.createFeedbackResponseStatistic(time);
-    }
-
-    public void deleteFeedbackResponseStatistic(Instant time) {
-        Assumption.assertNotNull(time);
-        feedbackResponseStatisticsLogic.deleteFeedbackResponseStatistic(time);
-    }
-
     public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int count)
             throws InvalidParametersException, EntityAlreadyExistsException {
         Assumption.assertNotNull(time);

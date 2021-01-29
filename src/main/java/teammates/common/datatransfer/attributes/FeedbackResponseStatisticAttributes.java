@@ -20,10 +20,12 @@ public class FeedbackResponseStatisticAttributes extends EntityAttributes<Feedba
 
     private Instant time;
     private int count;
+    private int totalCount;
 
-    public FeedbackResponseStatisticAttributes(Instant time, int count) {
+    public FeedbackResponseStatisticAttributes(Instant time, int count, int totalCount) {
         this.time = time.truncatedTo(ChronoUnit.MINUTES);
         this.count = count;
+        this.totalCount = totalCount;
     }
 
     public Instant getTime() {
@@ -34,9 +36,13 @@ public class FeedbackResponseStatisticAttributes extends EntityAttributes<Feedba
         return this.count;
     }
 
+    public int getTotalCount() {
+        return this.totalCount;
+    }
+
     public static FeedbackResponseStatisticAttributes valueOf(FeedbackResponseStatistic frs) {
         FeedbackResponseStatisticAttributes frsa =
-                new FeedbackResponseStatisticAttributes(frs.getTime(), frs.getCount());
+                new FeedbackResponseStatisticAttributes(frs.getTime(), frs.getCount(), frs.getTotalCount());
         return frsa;
     }
 
@@ -54,7 +60,7 @@ public class FeedbackResponseStatisticAttributes extends EntityAttributes<Feedba
 
     @Override
     public FeedbackResponseStatistic toEntity() {
-        return new FeedbackResponseStatistic(time, count);
+        return new FeedbackResponseStatistic(time, count, totalCount);
     }
 
     @Override
@@ -66,7 +72,7 @@ public class FeedbackResponseStatisticAttributes extends EntityAttributes<Feedba
     @Override
     public int hashCode() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.time).append(this.count);
+        stringBuilder.append(this.time).append(this.count).append(this.totalCount);
         return stringBuilder.toString().hashCode();
     }
 

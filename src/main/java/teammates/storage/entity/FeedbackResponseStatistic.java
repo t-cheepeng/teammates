@@ -32,15 +32,19 @@ public class FeedbackResponseStatistic extends BaseEntity {
     @Unindex
     private int count;
 
+    @Unindex
+    private int totalCount;
+
     @SuppressWarnings("unused")
     private FeedbackResponseStatistic() {
         // required by Objectify
     }
 
-    public FeedbackResponseStatistic(Instant time, int count) {
+    public FeedbackResponseStatistic(Instant time, int count, int totalCount) {
         setTime(time);
         setCount(count);
         this.id = generateId(time);
+        this.totalCount = totalCount;
     }
 
     /**
@@ -59,15 +63,8 @@ public class FeedbackResponseStatistic extends BaseEntity {
         this.count = count;
     }
 
-    public void incrementCount() {
-        if (this.count + 1 > this.count) {
-            this.count++;
-        }
-    }
-
-    public void decrementCount() {
-        Assumption.assertTrue(count > 0);
-        this.count--;
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     public Instant getTime() {
@@ -76,5 +73,9 @@ public class FeedbackResponseStatistic extends BaseEntity {
 
     public int getCount() {
         return this.count;
+    }
+
+    public int getTotalCount() {
+        return this.totalCount;
     }
 }

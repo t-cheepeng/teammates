@@ -225,8 +225,8 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
         }
 
         try {
-            int feedbackSessionResponseCount = logic.getNumOfSessionResponses();
-            logic.setFeedbackResponseStatistic(Instant.now(), feedbackSessionResponseCount);
+            int totalFeedbackSessionResponseCount = logic.getNumOfSessionResponses();
+            logic.setFeedbackResponseStatistic(Instant.now(), totalFeedbackSessionResponseCount);
         } catch (InvalidParametersException | EntityAlreadyExistsException e) {
             throw new InvalidHttpRequestBodyException(e.getMessage(), e);
         }
