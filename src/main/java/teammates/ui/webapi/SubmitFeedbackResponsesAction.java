@@ -204,9 +204,6 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
 
         for (FeedbackResponseAttributes feedbackResponse : feedbackResponsesToDelete) {
             logic.deleteFeedbackResponseCascade(feedbackResponse.getId());
-
-            Instant time = feedbackResponse.getCreatedAt().truncatedTo(ChronoUnit.MINUTES);
-            logic.deleteFeedbackResponseStatistic(time);
         }
 
         List<FeedbackResponseAttributes> output = new ArrayList<>();
@@ -214,7 +211,6 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
         for (FeedbackResponseAttributes feedbackResponse : feedbackResponsesToAdd) {
             try {
                 output.add(logic.createFeedbackResponse(feedbackResponse));
-                logic.createFeedbackResponseStatistic(Instant.now());
             } catch (InvalidParametersException | EntityAlreadyExistsException e) {
                 throw new InvalidHttpRequestBodyException(e.getMessage(), e);
             }
@@ -223,10 +219,16 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
         for (FeedbackResponseAttributes.UpdateOptions feedbackResponse : feedbackResponsesToUpdate) {
             try {
                 output.add(logic.updateFeedbackResponseCascade(feedbackResponse));
-                logic.createFeedbackResponseStatistic(Instant.now());
             } catch (InvalidParametersException | EntityAlreadyExistsException | EntityDoesNotExistException e) {
                 throw new InvalidHttpRequestBodyException(e.getMessage(), e);
             }
+        }
+
+        try {
+            int feedbackSessionResponseCount = logic.getNumOfSessionResponses();
+            logic.setFeedbackResponseStatistic(Instant.now(), feedbackSessionResponseCount);
+        } catch (InvalidParametersException | EntityAlreadyExistsException e) {
+            throw new InvalidHttpRequestBodyException(e.getMessage(), e);
         }
 
         return new JsonResult(new FeedbackResponsesData(output));

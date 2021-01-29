@@ -66,9 +66,18 @@ public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseSta
         saveEntity(frs);
     }
 
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatisticCount(Instant time, int count) {
+        FeedbackResponseStatistic frs = getFeedbackResponseStatistic(time);
+        frs.setCount(count);
+        saveEntity(frs);
+        return makeAttributes(frs);
+    }
+
+
     public FeedbackResponseStatistic getFeedbackResponseStatistic(Instant time) {
         return load().id(FeedbackResponseStatistic.generateId(time)).now();
     }
+
     /**
      *
      * Deletes a feedback response statistic.

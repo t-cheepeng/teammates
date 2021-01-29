@@ -615,6 +615,13 @@ public final class FeedbackResponsesLogic {
     }
 
     /**
+     * Gets total number of unique responses per session.
+     */
+    public int getNumOfSessionResponses() {
+        return frDb.getNumOfSessionResponses();
+    }
+
+    /**
      * Set contains only unique response.
      */
     private static class UniqueResponsesSet {

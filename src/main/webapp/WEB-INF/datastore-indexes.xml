@@ -32,4 +32,9 @@
         <property name="isPublishedEmailEnabled" direction="asc"/>
         <property name="sentPublishedEmail" direction="asc"/>
     </datastore-index>
+    <datastore-index kind="FeedbackResponse" ancestor="false" source="manual">
+        <property name="giverEmail" direction="asc"/>
+        <property name="courseId" direction="asc"/>
+        <property name="feedbackSessionName" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>

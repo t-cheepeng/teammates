@@ -1367,6 +1367,25 @@ public class Logic {
         feedbackResponseStatisticsLogic.deleteFeedbackResponseStatistic(time);
     }
 
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int count)
+            throws InvalidParametersException, EntityAlreadyExistsException {
+        Assumption.assertNotNull(time);
+        Assumption.assertTrue(count >= 0);
+        return feedbackResponseStatisticsLogic.setFeedbackResponseStatistic(time, count);
+    }
+
+    /**
+     * Gets total number of unique responses per session.
+     */
+    public int getNumOfSessionResponses() {
+        return feedbackResponsesLogic.getNumOfSessionResponses();
+    }
+
+    public String getSectionForTeam(String courseId, String teamName) {
+        Assumption.assertNotNull(courseId);
+        Assumption.assertNotNull(teamName);
+        return studentsLogic.getSectionForTeam(courseId, teamName);
+    }
     public String getSectionForTeam(String courseId, String teamName) {
         Assumption.assertNotNull(courseId);
         Assumption.assertNotNull(teamName);

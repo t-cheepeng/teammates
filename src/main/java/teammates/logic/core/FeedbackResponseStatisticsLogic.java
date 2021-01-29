@@ -27,7 +27,7 @@ import teammates.storage.api.FeedbackResponseStatisticsDb;
 /**
  * Handles operations related to feedback response statistics.
  *
- * @see FeedbackResponseStatsticAttributes
+ * @see FeedbackResponseStatisticAttributes
  * @see FeedbackResponseStatisticsDb
  */
 public final class FeedbackResponseStatisticsLogic {
@@ -74,6 +74,24 @@ public final class FeedbackResponseStatisticsLogic {
             frsDb.deleteFeedbackResponseStatistic(time);
         } else { // decrement
             frsDb.decrementFeedbackResponseStatistic(time);
+        }
+    }
+
+    /**
+     * Creates a feedback response statistic with given count.
+     * If the feedback response statistic already exists, update the count.
+     *
+     * @return created feedback response statistic
+     * @throws InvalidParametersException if the feedback response statistic is not valid
+     * @throws EntityAlreadyExistsException if the feedback response statistic already exists
+     */
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int count)
+            throws InvalidParametersException, EntityAlreadyExistsException {
+        if (frsDb.hasFeedbackResponseStatistic(time)) { // already exists, increment
+            return frsDb.setFeedbackResponseStatisticCount(time, count);
+        } else {                                        // does not exist, create
+            FeedbackResponseStatisticAttributes frsa = new FeedbackResponseStatisticAttributes(time, count);
+            return frsDb.createEntity(frsa);
         }
     }
 
