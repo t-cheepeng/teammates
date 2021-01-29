@@ -94,9 +94,13 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
     JsonResult execute() {
         String feedbackQuestionId = getNonNullRequestParamValue(Const.ParamsNames.FEEDBACK_QUESTION_ID);
         FeedbackQuestionAttributes feedbackQuestion = logic.getFeedbackQuestion(feedbackQuestionId);
+
         if (feedbackQuestion == null) {
             throw new EntityNotFoundException(new EntityDoesNotExistException("The feedback question does not exist."));
         }
+
+        FeedbackSessionAttributes feedbackSession =
+                getNonNullFeedbackSession(feedbackQuestion.feedbackSessionName, feedbackQuestion.courseId);
 
         List<FeedbackResponseAttributes> existingResponses;
         Map<String, String> recipientsOfTheQuestion;
@@ -202,6 +206,7 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
                 .map(entry -> entry.getValue())
                 .collect(Collectors.toList());
 
+
         for (FeedbackResponseAttributes feedbackResponse : feedbackResponsesToDelete) {
             logic.deleteFeedbackResponseCascade(feedbackResponse.getId());
 
@@ -210,11 +215,17 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
         }
 
         List<FeedbackResponseAttributes> output = new ArrayList<>();
-
         for (FeedbackResponseAttributes feedbackResponse : feedbackResponsesToAdd) {
             try {
+                if (!logic.hasStudentSubmittedFeedback(feedbackSession, giverIdentifier)) {
+                    try {
+                        logic.createFeedbackResponseStatistic(Instant.now());
+                    } catch (InvalidParametersException | EntityAlreadyExistsException e) {
+                        throw new InvalidHttpRequestBodyException(e.getMessage(), e);
+                    }
+                }
+
                 output.add(logic.createFeedbackResponse(feedbackResponse));
-                logic.createFeedbackResponseStatistic(Instant.now());
             } catch (InvalidParametersException | EntityAlreadyExistsException e) {
                 throw new InvalidHttpRequestBodyException(e.getMessage(), e);
             }
@@ -223,12 +234,10 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
         for (FeedbackResponseAttributes.UpdateOptions feedbackResponse : feedbackResponsesToUpdate) {
             try {
                 output.add(logic.updateFeedbackResponseCascade(feedbackResponse));
-                logic.createFeedbackResponseStatistic(Instant.now());
             } catch (InvalidParametersException | EntityAlreadyExistsException | EntityDoesNotExistException e) {
                 throw new InvalidHttpRequestBodyException(e.getMessage(), e);
             }
         }
-
         return new JsonResult(new FeedbackResponsesData(output));
     }
 
