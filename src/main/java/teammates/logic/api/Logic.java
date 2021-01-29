@@ -1386,11 +1386,6 @@ public class Logic {
         Assumption.assertNotNull(teamName);
         return studentsLogic.getSectionForTeam(courseId, teamName);
     }
-    public String getSectionForTeam(String courseId, String teamName) {
-        Assumption.assertNotNull(courseId);
-        Assumption.assertNotNull(teamName);
-        return studentsLogic.getSectionForTeam(courseId, teamName);
-    }
 
     /**
      * Persists the given data bundle to the datastore.
