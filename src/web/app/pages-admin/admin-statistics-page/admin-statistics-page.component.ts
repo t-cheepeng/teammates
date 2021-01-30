@@ -113,7 +113,7 @@ export class AdminStatisticsPageComponent implements OnInit {
       {
         name: this.TITLE,
         data: statistics.feedbackResponseStats
-            .filter((statistics: FeedbackResponseStat) => statistics.number > 0)
+            .filter((stat: FeedbackResponseStat) => stat.number > 0)
             .map((statistic: FeedbackResponseStat) => {
               return {
                 x: statistic.responseTimeStamp,
