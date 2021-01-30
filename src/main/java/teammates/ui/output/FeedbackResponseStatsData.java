@@ -1,10 +1,9 @@
 package teammates.ui.output;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The API output format of new feedback response data for a list of time points
+ * The API output format of new feedback response data for a list of time points.
  */
 public class FeedbackResponseStatsData extends ApiOutput {
 

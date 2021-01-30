@@ -5,23 +5,15 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.googlecode.objectify.Key;
-import com.googlecode.objectify.VoidWork;
 import com.googlecode.objectify.cmd.LoadType;
-import com.googlecode.objectify.cmd.Query;
 
-import teammates.common.datatransfer.AttributesDeletionQuery;
 import teammates.common.datatransfer.attributes.FeedbackResponseStatisticAttributes;
 import teammates.common.exception.EntityDoesNotExistException;
-import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Assumption;
-import teammates.common.util.Const;
-import teammates.common.util.TimeHelper;
-import teammates.storage.entity.FeedbackResponse;
 import teammates.storage.entity.FeedbackResponseStatistic;
 
 /**
@@ -30,7 +22,8 @@ import teammates.storage.entity.FeedbackResponseStatistic;
  * @see FeedbackResponseStatistic
  * @see FeedbackResponseStatisticAttributes
  */
-public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseStatistic, FeedbackResponseStatisticAttributes> {
+public class FeedbackResponseStatisticsDb
+        extends EntitiesDb<FeedbackResponseStatistic, FeedbackResponseStatisticAttributes> {
 
     /**
      * Gets all feedback response statistics between the start and end time.
@@ -46,14 +39,16 @@ public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseSta
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Checks if there exist a feedback response statistic at time.
+     */
     public boolean hasFeedbackResponseStatistic(Instant time) {
         return getFeedbackResponseStatistic(time) != null;
     }
 
-    public boolean isFeedbackResponseStatisticCountOne(Instant time) {
-        return getFeedbackResponseStatistic(time).getCount() == 1;
-    }
-
+    /**
+     * Sets an existing feedback response statistic at time to count and totalCount.
+     */
     public FeedbackResponseStatisticAttributes setFeedbackResponseStatisticCount(Instant time, int count, int totalCount) {
         FeedbackResponseStatistic frs = getFeedbackResponseStatistic(time);
         frs.setCount(count);
@@ -63,11 +58,25 @@ public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseSta
         return makeAttributes(frs);
     }
 
+    /**
+     * Gets a feedback response statistics at time.
+     */
     public FeedbackResponseStatistic getFeedbackResponseStatistic(Instant time) {
         return load().id(FeedbackResponseStatistic.generateId(time)).now();
     }
 
-    public FeedbackResponseStatistic getPreviousFeedbackResponseStatistic(Instant time)
+    /**
+     * Gets a feedback response statistic total count at time.
+     */
+    public int getFeedbackResponseStatisticTotalCount(Instant time) {
+        return getFeedbackResponseStatistic(time).getTotalCount();
+    }
+
+    /**
+     * Gets the feedback response statistic directly before the one at time.
+     * If such a statistic does not exist, throws an error
+     */
+    public int getPreviousFeedbackResponseStatisticTotalCount(Instant time)
             throws EntityDoesNotExistException {
         FeedbackResponseStatistic frs = load()
                 .filter("time <", time.truncatedTo(ChronoUnit.MINUTES))
@@ -75,14 +84,13 @@ public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseSta
                 .first()
                 .now();
 
-
         if (frs == null) {
             throw new EntityDoesNotExistException(ERROR_UPDATE_NON_EXISTENT);
         }
 
         log.info("prev=" + frs.getTime().toString() + "," + frs.getTotalCount());
 
-        return frs;
+        return frs.getTotalCount();
     }
 
     @Override

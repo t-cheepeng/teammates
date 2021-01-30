@@ -1,15 +1,13 @@
 package teammates.storage.entity;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.OnSave;
 import com.googlecode.objectify.annotation.Translate;
 import com.googlecode.objectify.annotation.Unindex;
-import teammates.common.util.Assumption;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 /**
  * Represents a feedback response statistic.
@@ -24,6 +22,7 @@ public class FeedbackResponseStatistic extends BaseEntity {
      * @see #generateId(Instant)
      */
     @Id
+    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private long id;
 
     @Translate(InstantTranslatorFactory.class)

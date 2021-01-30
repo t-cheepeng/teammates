@@ -6,14 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import teammates.common.datatransfer.questions.FeedbackQuestionType;
-import teammates.common.datatransfer.questions.FeedbackResponseDetails;
-import teammates.common.datatransfer.questions.FeedbackTextResponseDetails;
-import teammates.common.util.Assumption;
-import teammates.common.util.Const;
-import teammates.common.util.FieldValidator;
-import teammates.common.util.JsonUtils;
-import teammates.storage.entity.FeedbackResponse;
 import teammates.storage.entity.FeedbackResponseStatistic;
 
 public class FeedbackResponseStatisticAttributes extends EntityAttributes<FeedbackResponseStatistic> {
@@ -41,16 +33,13 @@ public class FeedbackResponseStatisticAttributes extends EntityAttributes<Feedba
     }
 
     public static FeedbackResponseStatisticAttributes valueOf(FeedbackResponseStatistic frs) {
-        FeedbackResponseStatisticAttributes frsa =
-                new FeedbackResponseStatisticAttributes(frs.getTime(), frs.getCount(), frs.getTotalCount());
-        return frsa;
+        return new FeedbackResponseStatisticAttributes(frs.getTime(), frs.getCount(), frs.getTotalCount());
     }
 
     @Override
     public List<String> getInvalidityInfo() {
-        List<String> errors = new ArrayList<>();
+        return new ArrayList<>();
         // TODO: how to implement this?
-        return errors;
     }
 
     @Override

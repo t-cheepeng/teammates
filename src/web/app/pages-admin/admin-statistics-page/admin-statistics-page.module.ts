@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminStatisticsPageComponent } from './admin-statistics-page.component';
+import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { LoadingSpinnerModule } from '../../components/loading-spinner/loading-spinner.module';
-import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { AdminStatisticsPageComponent } from './admin-statistics-page.component';
 
 const routes: Routes = [
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [AdminStatisticsPageComponent],
   exports: [
-      AdminStatisticsPageComponent,
+    AdminStatisticsPageComponent,
   ],
   imports: [
     CommonModule,
@@ -28,7 +28,7 @@ const routes: Routes = [
     NgApexchartsModule,
     LoadingSpinnerModule,
     NgbDatepickerModule,
-    FormsModule
+    FormsModule,
   ],
 })
 export class AdminStatisticsPageModule { }

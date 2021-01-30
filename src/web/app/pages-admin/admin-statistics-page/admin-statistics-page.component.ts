@@ -1,37 +1,40 @@
 import { Component, OnInit } from '@angular/core';
-import { ApexTitleSubtitle, ApexXAxis, ApexYAxis, ApexAxisChartSeries, ApexChart, ApexTooltip } from 'ng-apexcharts';
-import { FeedbackResponsesService } from '../../../services/feedback-responses.service';
-import { finalize } from 'rxjs/operators';
-import { FeedbackResponseStat, FeedbackResponseStats } from '../../../types/api-output';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexTooltip, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
+import { finalize } from 'rxjs/operators';
+import { FeedbackResponsesService } from '../../../services/feedback-responses.service';
+import { FeedbackResponseStat, FeedbackResponseStats } from '../../../types/api-output';
 
 interface ChartOptions {
-  series: ApexAxisChartSeries,
-  chart: ApexChart,
-  xaxis: ApexXAxis,
-  yaxis: ApexYAxis,
-  title: ApexTitleSubtitle,
-  tooltip: ApexTooltip,
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  title: ApexTitleSubtitle;
+  tooltip: ApexTooltip;
 }
 
+/**
+ * Admin statistics page for new feedback responses
+ */
 @Component({
   selector: 'tm-admin-statistics-page',
   templateUrl: './admin-statistics-page.component.html',
-  styleUrls: ['./admin-statistics-page.component.scss']
+  styleUrls: ['./admin-statistics-page.component.scss'],
 })
 export class AdminStatisticsPageComponent implements OnInit {
   // Update interval for getting new feedback response in ms
-  private readonly UPDATE_INTERVAL: number = 60000;
-  private readonly TITLE: string = 'New Feedback Responses';
+  readonly UPDATE_INTERVAL: number = 60000;
+  readonly TITLE: string = 'New Feedback Responses';
 
-  isLoadingStatistics = false;
+  isLoadingStatistics: boolean = false;
   numOfUpdates: number = 0;
 
   startDate: NgbDateStruct = {
-    day: 0, month: 0, year: 0
+    day: 0, month: 0, year: 0,
   };
   endDate: NgbDateStruct = {
-    day: 0, month: 0, year: 0
+    day: 0, month: 0, year: 0,
   };
 
   intervalHandler?: number;
@@ -40,7 +43,7 @@ export class AdminStatisticsPageComponent implements OnInit {
       {
         name: this.TITLE,
         data: [],
-      }
+      },
     ],
     chart: {
       height: 350,
@@ -54,14 +57,14 @@ export class AdminStatisticsPageComponent implements OnInit {
     },
     yaxis: {
       title: {
-        text: 'Number'
+        text: 'Number',
       },
     },
     tooltip: {
       x: {
-        format: 'dd MMM, HH:mm:ss'
-      }
-    }
+        format: 'dd MMM, HH:mm:ss',
+      },
+    },
   };
 
   constructor(private feedbackResponseService: FeedbackResponsesService) {
@@ -96,7 +99,7 @@ export class AdminStatisticsPageComponent implements OnInit {
   updateStatistics(): void {
     const start: number = this.ngbDateToDate(this.startDate).getTime();
     const end: number = this.ngbDateToDate(this.endDate).getTime() + (this.numOfUpdates * this.UPDATE_INTERVAL);
-    this.numOfUpdates++;
+    this.numOfUpdates += 1;
 
     this.feedbackResponseService
         .getFeedbackResponseStatistics(start.toString(), end.toString())
@@ -105,7 +108,7 @@ export class AdminStatisticsPageComponent implements OnInit {
         });
   }
 
-  private toSeriesData(statistics: FeedbackResponseStats) {
+  private toSeriesData(statistics: FeedbackResponseStats): void {
     this.chartOptions.series = [
       {
         name: this.TITLE,
@@ -113,10 +116,10 @@ export class AdminStatisticsPageComponent implements OnInit {
             .map((statistic: FeedbackResponseStat) => {
               return {
                 x: statistic.responseTimeStamp,
-                y: statistic.number
+                y: statistic.number,
               };
             }),
-      }
+      },
     ];
 
   }

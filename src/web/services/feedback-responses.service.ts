@@ -194,7 +194,7 @@ export class FeedbackResponsesService {
   getFeedbackResponseStatistics(startDate: string, endDate: string): Observable<FeedbackResponseStats> {
     const paramMap: Record<string, string> = {
       frsstart: startDate,
-      frsend: endDate
+      frsend: endDate,
     };
     return this.httpRequestService.get(ResourceEndpoints.RESPONSES_STATISTICS, paramMap);
   }

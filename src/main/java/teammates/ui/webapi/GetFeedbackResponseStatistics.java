@@ -7,13 +7,13 @@ import java.util.List;
 import org.apache.http.HttpStatus;
 
 import teammates.common.datatransfer.attributes.FeedbackResponseStatisticAttributes;
-import teammates.common.exception.EntityAlreadyExistsException;
-import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
 import teammates.ui.output.FeedbackResponseStatData;
 import teammates.ui.output.FeedbackResponseStatsData;
-import teammates.storage.entity.FeedbackResponseStatistic;
 
+/**
+ * Gets all the new feedback response statistics.
+ */
 public class GetFeedbackResponseStatistics extends AdminOnlyAction {
 
     @Override
@@ -21,7 +21,7 @@ public class GetFeedbackResponseStatistics extends AdminOnlyAction {
         String startTimestampStr = getRequestParamValue(Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_START);
         String endTimestampStr = getRequestParamValue(Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_END);
 
-        if (startTimestampStr ==  null || endTimestampStr == null) {
+        if (startTimestampStr == null || endTimestampStr == null) {
             return new JsonResult("Error: no start and end time", HttpStatus.SC_BAD_REQUEST);
         }
 
