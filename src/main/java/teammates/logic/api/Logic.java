@@ -1356,15 +1356,18 @@ public class Logic {
         return feedbackResponseStatisticsLogic.getFeedbackResponseStatistics(start, end);
     }
 
-    public FeedbackResponseStatisticAttributes createFeedbackResponseStatistic(Instant time)
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int totalCount)
             throws InvalidParametersException, EntityAlreadyExistsException {
         Assumption.assertNotNull(time);
-        return feedbackResponseStatisticsLogic.createFeedbackResponseStatistic(time);
+        Assumption.assertTrue(totalCount >= 0);
+        return feedbackResponseStatisticsLogic.setFeedbackResponseStatistic(time, totalCount);
     }
 
-    public void deleteFeedbackResponseStatistic(Instant time) {
-        Assumption.assertNotNull(time);
-        feedbackResponseStatisticsLogic.deleteFeedbackResponseStatistic(time);
+    /**
+     * Gets total number of unique responses per session.
+     */
+    public int getNumOfSessionResponses() {
+        return feedbackResponsesLogic.getNumOfSessionResponses();
     }
 
     public String getSectionForTeam(String courseId, String teamName) {

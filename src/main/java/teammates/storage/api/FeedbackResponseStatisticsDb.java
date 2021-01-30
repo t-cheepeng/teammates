@@ -3,6 +3,7 @@ package teammates.storage.api;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,31 +54,35 @@ public class FeedbackResponseStatisticsDb extends EntitiesDb<FeedbackResponseSta
         return getFeedbackResponseStatistic(time).getCount() == 1;
     }
 
-    public FeedbackResponseStatisticAttributes incrementFeedbackResponseStatistic(Instant time) {
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatisticCount(Instant time, int count, int totalCount) {
         FeedbackResponseStatistic frs = getFeedbackResponseStatistic(time);
-        frs.incrementCount();
+        frs.setCount(count);
+        frs.setTotalCount(totalCount);
+        log.info(count + "," + totalCount);
         saveEntity(frs);
         return makeAttributes(frs);
-    }
-
-    public void decrementFeedbackResponseStatistic(Instant time) {
-        FeedbackResponseStatistic frs = getFeedbackResponseStatistic(time);
-        frs.decrementCount();
-        saveEntity(frs);
     }
 
     public FeedbackResponseStatistic getFeedbackResponseStatistic(Instant time) {
         return load().id(FeedbackResponseStatistic.generateId(time)).now();
     }
-    /**
-     *
-     * Deletes a feedback response statistic.
-     */
-    public void deleteFeedbackResponseStatistic(Instant time) {
-        Assumption.assertNotNull(time);
-        long statisticId = FeedbackResponseStatistic.generateId(time);
 
-        deleteEntity(Key.create(FeedbackResponseStatistic.class, statisticId));
+    public FeedbackResponseStatistic getPreviousFeedbackResponseStatistic(Instant time)
+            throws EntityDoesNotExistException {
+        FeedbackResponseStatistic frs = load()
+                .filter("time <", time.truncatedTo(ChronoUnit.MINUTES))
+                .order("-time")
+                .first()
+                .now();
+
+
+        if (frs == null) {
+            throw new EntityDoesNotExistException(ERROR_UPDATE_NON_EXISTENT);
+        }
+
+        log.info("prev=" + frs.getTime().toString() + "," + frs.getTotalCount());
+
+        return frs;
     }
 
     @Override

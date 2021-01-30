@@ -23,11 +23,12 @@ import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Assumption;
 import teammates.storage.api.FeedbackResponseStatisticsDb;
+import teammates.storage.entity.FeedbackResponseStatistic;
 
 /**
  * Handles operations related to feedback response statistics.
  *
- * @see FeedbackResponseStatsticAttributes
+ * @see FeedbackResponseStatisticAttributes
  * @see FeedbackResponseStatisticsDb
  */
 public final class FeedbackResponseStatisticsLogic {
@@ -48,32 +49,35 @@ public final class FeedbackResponseStatisticsLogic {
     }
 
     /**
-     * Creates a feedback response statistic with count 1.
-     * If the feedback response statistic already exists, increment the count instead.
+     * Creates a feedback response statistic with given total count.
+     * If the feedback response statistic already exists, update the count.
      *
      * @return created feedback response statistic
-     * @throws InvalidParametersException if the feedback response statistic is not valid
+     * @throws InvalidParametersException   if the feedback response statistic is not valid
      * @throws EntityAlreadyExistsException if the feedback response statistic already exists
      */
-    public FeedbackResponseStatisticAttributes createFeedbackResponseStatistic(Instant time)
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int totalCount)
             throws InvalidParametersException, EntityAlreadyExistsException {
-        if (frsDb.hasFeedbackResponseStatistic(time)) { // already exists, increment
-            return frsDb.incrementFeedbackResponseStatistic(time);
-        } else {                                        // does not exist, create
-            FeedbackResponseStatisticAttributes frsa = new FeedbackResponseStatisticAttributes(time, 1);
-            return frsDb.createEntity(frsa);
+        try {
+            FeedbackResponseStatistic previousFrs = frsDb.getPreviousFeedbackResponseStatistic(time);
+            int newCount = totalCount - previousFrs.getTotalCount();
+            return setFeedbackResponseStatistic(time, newCount, totalCount);
+        } catch (EntityDoesNotExistException e) {
+            return setFeedbackResponseStatistic(time, totalCount, totalCount);
         }
     }
 
-    /**
-     * Decrements the feedback response statistic using the timestamp.
-     * If the feedback response statistic has only one count, delete the entity from the database.
-     */
-    public void deleteFeedbackResponseStatistic(Instant time) {
-        if (frsDb.isFeedbackResponseStatisticCountOne(time)) { // count is going to be zero, delete
-            frsDb.deleteFeedbackResponseStatistic(time);
-        } else { // decrement
-            frsDb.decrementFeedbackResponseStatistic(time);
+    private FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int count, int totalCount)
+            throws InvalidParametersException, EntityAlreadyExistsException {
+        if (frsDb.hasFeedbackResponseStatistic(time)) { // already exists, increment
+            FeedbackResponseStatistic frs = frsDb.getFeedbackResponseStatistic(time);
+            if (frs.getTotalCount() == totalCount) {
+                return FeedbackResponseStatisticAttributes.valueOf(frs);
+            }
+            return frsDb.setFeedbackResponseStatisticCount(time, count, totalCount);
+        } else {                                        // does not exist, create
+            FeedbackResponseStatisticAttributes frsa = new FeedbackResponseStatisticAttributes(time, count, totalCount);
+            return frsDb.createEntity(frsa);
         }
     }
 
