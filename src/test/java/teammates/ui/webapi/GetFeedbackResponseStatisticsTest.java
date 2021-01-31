@@ -1,22 +1,24 @@
 package teammates.ui.webapi;
 
+import java.time.Instant;
+
 import org.apache.http.HttpStatus;
 import org.testng.annotations.Test;
 
-import teammates.common.datatransfer.attributes.CourseAttributes;
-import teammates.common.datatransfer.attributes.InstructorAttributes;
-import teammates.common.datatransfer.attributes.StudentAttributes;
-import teammates.common.exception.EntityAlreadyExistsException;
-import teammates.common.exception.EntityDoesNotExistException;
-import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
-import teammates.ui.output.CourseData;
-import teammates.ui.output.MessageOutput;
+import teammates.ui.output.FeedbackResponseStatsData;
 
 /**
  * SUT: {@link GetFeedbackResponseStatistics}.
  */
 public class GetFeedbackResponseStatisticsTest extends BaseActionTest<GetFeedbackResponseStatistics> {
+
+    private static Instant jan1 = Instant.parse("2020-01-01T00:00:00.00Z");
+    private static Instant jan2 = Instant.parse("2020-01-02T00:00:00.00Z");
+    private static Instant jan3 = Instant.parse("2020-01-03T00:00:00.00Z");
+    private static Instant jan4 = Instant.parse("2020-01-04T00:00:00.00Z");
+    private static Instant jan5 = Instant.parse("2020-01-05T00:00:00.00Z");
+    private static Instant jan6 = Instant.parse("2020-01-06T00:00:00.00Z");
 
     @Override
     protected String getActionUri() {
@@ -35,47 +37,41 @@ public class GetFeedbackResponseStatisticsTest extends BaseActionTest<GetFeedbac
     }
 
     @Test
-    protected void testExecute_typicalUsage_shouldPass() {
-//        InstructorAttributes instructor1OfCourse1 = typicalBundle.instructors.get("instructor1OfCourse1");
-//        CourseAttributes expectedCourse = logic.getCourse(instructor1OfCourse1.getCourseId());
-//
-//        loginAsInstructor(instructor1OfCourse1.googleId);
-//
-//        ______TS("typical success case for instructor");
-//
-//        String[] params = {
-//                Const.ParamsNames.COURSE_ID, instructor1OfCourse1.getCourseId(),
-//                Const.ParamsNames.ENTITY_TYPE, Const.EntityType.INSTRUCTOR,
-//        };
-//        GetCourseAction getCourseAction = getAction(params);
-//        JsonResult response = getJsonResult(getCourseAction);
-//
-//        assertEquals(HttpStatus.SC_OK, response.getStatusCode());
-//        CourseData courseData = (CourseData) response.getOutput();
-//
-//        assertEquals(expectedCourse.getId(), courseData.getCourseId());
-//        assertEquals(expectedCourse.getName(), courseData.getCourseName());
-//        assertEquals(expectedCourse.getTimeZone().getId(), courseData.getTimeZone());
-//
-//        StudentAttributes student1OfCourse1 = typicalBundle.students.get("student1InCourse1");
-//        expectedCourse = logic.getCourse(student1OfCourse1.getCourse());
-//        loginAsStudent(student1OfCourse1.googleId);
-//
-//        ______TS("typical success case for student");
-//
-//        params = new String[] {
-//                Const.ParamsNames.COURSE_ID, student1OfCourse1.getCourse(),
-//                Const.ParamsNames.ENTITY_TYPE, Const.EntityType.STUDENT,
-//        };
-//        getCourseAction = getAction(params);
-//        response = getJsonResult(getCourseAction);
-//
-//        assertEquals(HttpStatus.SC_OK, response.getStatusCode());
-//        courseData = (CourseData) response.getOutput();
-//
-//        assertEquals(expectedCourse.getId(), courseData.getCourseId());
-//        assertEquals(expectedCourse.getName(), courseData.getCourseName());
-//        assertEquals(expectedCourse.getTimeZone().getId(), courseData.getTimeZone());
+    protected void testExecute_typicalUsage_shouldPass() throws Exception {
+        loginAsAdmin();
+        logic.setFeedbackResponseStatistic(jan1, 10);
+        logic.setFeedbackResponseStatistic(jan2, 12);
+        logic.setFeedbackResponseStatistic(jan3, 17);
+        logic.setFeedbackResponseStatistic(jan4, 22);
+        logic.setFeedbackResponseStatistic(jan5, 24);
+
+        ______TS("Typical usage");
+
+        String[] submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_START,
+                String.valueOf(jan1.getEpochSecond() * 1000),
+                Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_END,
+                String.valueOf(jan4.getEpochSecond() * 1000),
+        };
+        GetFeedbackResponseStatistics getFeedbackResponseStatistics = getAction(submissionParams);
+        JsonResult response = getJsonResult(getFeedbackResponseStatistics);
+        FeedbackResponseStatsData feedbackResponseStatsData = (FeedbackResponseStatsData) response.getOutput();
+
+        assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
+        assertEquals(3, feedbackResponseStatsData.getFeedbackResponseStats().size());
+
+        submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_START,
+                String.valueOf(jan1.getEpochSecond() * 1000),
+                Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_END,
+                String.valueOf(jan6.getEpochSecond() * 1000),
+        };
+        getFeedbackResponseStatistics = getAction(submissionParams);
+        response = getJsonResult(getFeedbackResponseStatistics);
+        feedbackResponseStatsData = (FeedbackResponseStatsData) response.getOutput();
+
+        assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
+        assertEquals(5, feedbackResponseStatsData.getFeedbackResponseStats().size());
     }
 
     @Test
@@ -84,31 +80,57 @@ public class GetFeedbackResponseStatisticsTest extends BaseActionTest<GetFeedbac
 
         ______TS("Not enough parameters");
 
-        verifyHttpParameterFailure();
+        String[] submissionParams = new String[] {};
+        GetFeedbackResponseStatistics getFeedbackResponseStatistics = getAction(submissionParams);
+        JsonResult response = getJsonResult(getFeedbackResponseStatistics);
 
-        String[] submissionParams = new String[] {
+        assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST);
+
+        submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_START, "1000",
         };
-        verifyHttpParameterFailure(submissionParams);
+        getFeedbackResponseStatistics = getAction(submissionParams);
+        response = getJsonResult(getFeedbackResponseStatistics);
+
+        assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test
     protected void testExecute_invalidParameters_shouldFail() {
         loginAsAdmin();
 
-        ______TS("Invalid parameter types");
+        ______TS("Invalid parameter types: not number");
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_START, "thousand",
                 Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_END, "two thousand",
         };
-        verifyHttpParameterFailure(submissionParams);
+        GetFeedbackResponseStatistics getFeedbackResponseStatistics = getAction(submissionParams);
+        JsonResult response = getJsonResult(getFeedbackResponseStatistics);
+
+        assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST);
+
+        ______TS("Invalid parameter types: negative numbers");
 
         submissionParams = new String[] {
                 Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_START, "-300",
                 Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_END, "-700",
         };
-        verifyHttpParameterFailure(submissionParams);
+        getFeedbackResponseStatistics = getAction(submissionParams);
+        response = getJsonResult(getFeedbackResponseStatistics);
+
+        assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST);
+
+        ______TS("Invalid parameter types: start is after end");
+
+        submissionParams = new String[] {
+                Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_START, "1000",
+                Const.ParamsNames.FEEDBACK_RESPONSE_STATISTICS_END, "500",
+        };
+        getFeedbackResponseStatistics = getAction(submissionParams);
+        response = getJsonResult(getFeedbackResponseStatistics);
+
+        assertEquals(response.getStatusCode(), HttpStatus.SC_BAD_REQUEST);
     }
 
     @Test
