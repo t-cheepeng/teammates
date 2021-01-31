@@ -25,9 +25,18 @@ public class GetFeedbackResponseStatistics extends AdminOnlyAction {
             return new JsonResult("Error: no start and end time", HttpStatus.SC_BAD_REQUEST);
         }
 
-        // TODO: Error handling, if the types are wrong (not long), also ensure that start <= end
-        long startTimestamp = Long.parseLong(startTimestampStr);
-        long endTimestamp = Long.parseLong(endTimestampStr);
+        long startTimestamp, endTimestamp;
+        try {
+            startTimestamp = Long.parseLong(startTimestampStr);
+            endTimestamp = Long.parseLong(endTimestampStr);
+        } catch (Exception e) {
+            return new JsonResult("Error: start and end time must be numbers", HttpStatus.SC_BAD_REQUEST);
+        }
+
+        if (startTimestamp < 0 || endTimestamp < 0) {
+            return new JsonResult("Error: start and end time must be non-negative", HttpStatus.SC_BAD_REQUEST);
+        }
+
         Instant start = Instant.ofEpochMilli(startTimestamp);
         Instant end = Instant.ofEpochMilli(endTimestamp);
 
