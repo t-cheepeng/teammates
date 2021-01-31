@@ -25,7 +25,8 @@ public class GetFeedbackResponseStatistics extends AdminOnlyAction {
             return new JsonResult("Error: no start and end time", HttpStatus.SC_BAD_REQUEST);
         }
 
-        long startTimestamp, endTimestamp;
+        long startTimestamp;
+        long endTimestamp;
         try {
             startTimestamp = Long.parseLong(startTimestampStr);
             endTimestamp = Long.parseLong(endTimestampStr);
@@ -39,6 +40,10 @@ public class GetFeedbackResponseStatistics extends AdminOnlyAction {
 
         Instant start = Instant.ofEpochMilli(startTimestamp);
         Instant end = Instant.ofEpochMilli(endTimestamp);
+
+        if (start.isAfter(end)) {
+            return new JsonResult("Error: end time must be after start time", HttpStatus.SC_BAD_REQUEST);
+        }
 
         List<FeedbackResponseStatisticAttributes> statsAttributes = logic.getFeedbackResponseStatistics(start, end);
 
