@@ -19,6 +19,7 @@ import teammates.common.datatransfer.attributes.CourseAttributes;
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseCommentAttributes;
+import teammates.common.datatransfer.attributes.FeedbackResponseStatisticAttributes;
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
@@ -34,6 +35,7 @@ import teammates.logic.core.CoursesLogic;
 import teammates.logic.core.DataBundleLogic;
 import teammates.logic.core.FeedbackQuestionsLogic;
 import teammates.logic.core.FeedbackResponseCommentsLogic;
+import teammates.logic.core.FeedbackResponseStatisticsLogic;
 import teammates.logic.core.FeedbackResponsesLogic;
 import teammates.logic.core.FeedbackSessionsLogic;
 import teammates.logic.core.InstructorsLogic;
@@ -54,6 +56,8 @@ public class Logic {
     protected static final FeedbackSessionsLogic feedbackSessionsLogic = FeedbackSessionsLogic.inst();
     protected static final FeedbackQuestionsLogic feedbackQuestionsLogic = FeedbackQuestionsLogic.inst();
     protected static final FeedbackResponsesLogic feedbackResponsesLogic = FeedbackResponsesLogic.inst();
+    protected static final FeedbackResponseStatisticsLogic feedbackResponseStatisticsLogic =
+            FeedbackResponseStatisticsLogic.inst();
     protected static final FeedbackResponseCommentsLogic feedbackResponseCommentsLogic =
             FeedbackResponseCommentsLogic.inst();
     protected static final ProfilesLogic profilesLogic = ProfilesLogic.inst();
@@ -1346,6 +1350,24 @@ public class Logic {
 
     public List<FeedbackSessionAttributes> getFeedbackSessionsWhichNeedOpenEmailsToBeSent() {
         return feedbackSessionsLogic.getFeedbackSessionsWhichNeedOpenEmailsToBeSent();
+    }
+
+    public List<FeedbackResponseStatisticAttributes> getFeedbackResponseStatistics(Instant start, Instant end) {
+        return feedbackResponseStatisticsLogic.getFeedbackResponseStatistics(start, end);
+    }
+
+    public FeedbackResponseStatisticAttributes setFeedbackResponseStatistic(Instant time, int totalCount)
+            throws InvalidParametersException, EntityAlreadyExistsException {
+        Assumption.assertNotNull(time);
+        Assumption.assertTrue(totalCount >= 0);
+        return feedbackResponseStatisticsLogic.setFeedbackResponseStatistic(time, totalCount);
+    }
+
+    /**
+     * Gets total number of unique responses per session.
+     */
+    public int getNumOfSessionResponses() {
+        return feedbackResponsesLogic.getNumOfSessionResponses();
     }
 
     public String getSectionForTeam(String courseId, String teamName) {

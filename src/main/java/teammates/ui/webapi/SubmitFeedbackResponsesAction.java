@@ -1,5 +1,6 @@
 package teammates.ui.webapi;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -220,6 +221,13 @@ class SubmitFeedbackResponsesAction extends BasicFeedbackSubmissionAction {
             } catch (InvalidParametersException | EntityAlreadyExistsException | EntityDoesNotExistException e) {
                 throw new InvalidHttpRequestBodyException(e.getMessage(), e);
             }
+        }
+
+        try {
+            int totalFeedbackSessionResponseCount = logic.getNumOfSessionResponses();
+            logic.setFeedbackResponseStatistic(Instant.now(), totalFeedbackSessionResponseCount);
+        } catch (InvalidParametersException | EntityAlreadyExistsException e) {
+            throw new InvalidHttpRequestBodyException(e.getMessage(), e);
         }
 
         return new JsonResult(new FeedbackResponsesData(output));

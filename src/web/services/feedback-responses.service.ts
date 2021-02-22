@@ -17,7 +17,7 @@ import {
   FeedbackRankOptionsResponseDetails,
   FeedbackRankRecipientsResponseDetails,
   FeedbackResponseDetails,
-  FeedbackResponses,
+  FeedbackResponses, FeedbackResponseStats,
   FeedbackRubricResponseDetails,
   FeedbackTextResponseDetails,
   ResponseOutput,
@@ -186,6 +186,17 @@ export class FeedbackResponsesService {
       questionid: questionId,
       ...additionalParams,
     }, request);
+  }
+
+  /**
+   * Retrieves all new feedback response by calling API.
+   */
+  getFeedbackResponseStatistics(startDate: string, endDate: string): Observable<FeedbackResponseStats> {
+    const paramMap: Record<string, string> = {
+      frsstart: startDate,
+      frsend: endDate,
+    };
+    return this.httpRequestService.get(ResourceEndpoints.RESPONSES_STATISTICS, paramMap);
   }
 
 }

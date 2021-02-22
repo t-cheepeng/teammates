@@ -300,6 +300,20 @@ public class FeedbackResponsesDb extends EntitiesDb<FeedbackResponse, FeedbackRe
     }
 
     /**
+     * Gets total number of unique responses per session.
+     * Queried using distinct combination of giverEmail, courseId and feedbackSessionName
+     * fields to extract total session submission (not per question) for each user.
+     */
+    public int getNumOfSessionResponses() {
+        return load()
+                .project("giverEmail")
+                .project("courseId")
+                .project("feedbackSessionName")
+                .distinct(true)
+                .count();
+    }
+
+    /**
      * Returns true if there are existing responses in any feedback session in the course.
      */
     public boolean hasFeedbackResponseEntitiesForCourse(String courseId) {
