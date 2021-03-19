@@ -6,6 +6,8 @@ import { NgbDatepickerModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstr
 import { LoadingSpinnerModule } from '../../components/loading-spinner/loading-spinner.module';
 import { SessionEditFormModule } from '../../components/session-edit-form/session-edit-form.module';
 import { InstructorAuditLogsPageComponent } from './instructor-audit-logs-page.component';
+import { PanelChevronModule } from '../../components/panel-chevron/panel-chevron.module';
+import { SortableTableModule } from '../../components/sortable-table/sortable-table.module';
 
 const routes: Routes = [
   {
@@ -28,6 +30,8 @@ const routes: Routes = [
     SessionEditFormModule,
     NgbDropdownModule,
     LoadingSpinnerModule,
+    PanelChevronModule,
+    SortableTableModule,
   ],
 })
 export class InstructorAuditLogsPageModule { }
