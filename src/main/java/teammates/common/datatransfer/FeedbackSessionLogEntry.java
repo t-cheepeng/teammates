@@ -2,6 +2,7 @@ package teammates.common.datatransfer;
 
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
+import teammates.common.util.Logger;
 
 /**
  * Represents a log entry of a feedback session.
@@ -14,6 +15,7 @@ public class FeedbackSessionLogEntry {
 
     public FeedbackSessionLogEntry(StudentAttributes student, FeedbackSessionAttributes feedbackSession,
             String feedbackSessionLogType, long timestamp) {
+        Logger.getLogger().warning("This is a debug message - The fslogtype is" + feedbackSessionLogType);
         this.student = student;
         this.feedbackSession = feedbackSession;
         this.feedbackSessionLogType = feedbackSessionLogType;

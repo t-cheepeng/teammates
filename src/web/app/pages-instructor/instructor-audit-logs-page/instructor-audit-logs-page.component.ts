@@ -18,7 +18,7 @@ import { ErrorMessageOutput } from '../../error-message-output';
 import { LogService } from '../../../services/log.service';
 import { LOCAL_DATE_TIME_FORMAT, TimeResolvingResult, TimezoneService } from '../../../services/timezone.service';
 import { forkJoin, Observable } from 'rxjs';
-import { LogTypes } from '../../../types/api-const';
+import { LogType } from '../../../types/api-const';
 import { ColumnData, SortableTableCellData } from '../../components/sortable-table/sortable-table.component';
 import { SortBy } from '../../../types/sort-properties';
 
@@ -139,14 +139,8 @@ export class InstructorAuditLogsPageComponent implements OnInit {
     inst.set('hour', time.hour);
     inst.set('minute', time.minute);
     const localDateTime: string = inst.format(LOCAL_DATE_TIME_FORMAT);
-    const course: Course | undefined = this.courses.find((course: Course) => course.courseId = this.formModel.courseId);
 
-    let timeZone: string = '';
-    if (course) {
-      timeZone = course.timeZone;
-    }
-
-    return this.timezoneService.getResolvedTimestamp(localDateTime, timeZone, fieldName)
+    return this.timezoneService.getResolvedTimestamp(localDateTime, this.timezoneService.guessTimezone(), fieldName)
         .pipe(map((result: TimeResolvingResult) => result.timestamp));
   }
 
@@ -163,10 +157,11 @@ export class InstructorAuditLogsPageComponent implements OnInit {
         { header: 'Team', sortBy: SortBy.TEAM_NAME },
       ],
       logRowsData: log.feedbackSessionLogEntries.map((entry: FeedbackSessionLogEntry) => {
+        console.log(entry.feedbackSessionLogType);
         return [
           { value: this.timezoneService.formatToString(entry.timestamp, log.feedbackSessionData.timeZone, 'ddd, DD MMM, YYYY hh:mm A') },
           { value: entry.studentData.name },
-          { value: entry.feedbackSessionLogType == LogTypes.FEEDBACK_SESSION_ACCESS ? "Viewed the submission page" : "Submitted response"},
+          { value: entry.feedbackSessionLogType == LogType.FEEDBACK_SESSION_ACCESS ? "Viewed the submission page" : "Submitted response"},
           { value: entry.studentData.email },
           { value: entry.studentData.sectionName },
           { value: entry.studentData.teamName },

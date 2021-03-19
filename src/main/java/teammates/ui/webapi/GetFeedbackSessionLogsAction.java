@@ -16,6 +16,7 @@ import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.EntityNotFoundException;
 import teammates.common.exception.LogServiceException;
 import teammates.common.util.Const;
+import teammates.common.util.Logger;
 import teammates.ui.output.FeedbackSessionLogsData;
 
 /**
@@ -60,9 +61,19 @@ public class GetFeedbackSessionLogsAction extends Action {
         try {
             List<FeedbackSessionLogEntry> fsLogEntries =
                     logsProcessor.getFeedbackSessionLogs(courseId, email, startTime, endTime);
+            for (FeedbackSessionLogEntry fsle : fsLogEntries) {
+                Logger.getLogger().warning("This is a debug message - retrieved logs before grouping: " + fsle.getFeedbackSessionLogType());
+            }
+
             Map<FeedbackSessionAttributes, List<FeedbackSessionLogEntry>> groupedEntries =
                     groupFeedbackSessionLogEntries(courseId, fsLogEntries);
             FeedbackSessionLogsData fslData = new FeedbackSessionLogsData(groupedEntries);
+            if(!fslData.getFeedbackSessionLogs().isEmpty()) {
+                if (!fslData.getFeedbackSessionLogs().get(0).getfeedbackSessionLogEntries().isEmpty()) {
+                    Logger.getLogger().warning("This is a debug message - Before sending results, the fsllogtype is: " + fslData.getFeedbackSessionLogs().get(0).getfeedbackSessionLogEntries().get(0).getFeedbackSessionLogType());
+                }
+            }
+
             return new JsonResult(fslData);
         } catch (LogServiceException e) {
             return new JsonResult(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
@@ -77,6 +88,7 @@ public class GetFeedbackSessionLogsAction extends Action {
             groupedEntries.put(feedbackSession, new ArrayList<>());
         }
         for (FeedbackSessionLogEntry fsLogEntry : fsLogEntries) {
+            Logger.getLogger().warning("This is a debug message - Grouping entry has fsllogtype" + fsLogEntry.getFeedbackSessionLogType());
             FeedbackSessionAttributes fs = fsLogEntry.getFeedbackSession();
             if (groupedEntries.get(fs) != null) {
                 groupedEntries.get(fs).add(fsLogEntry);

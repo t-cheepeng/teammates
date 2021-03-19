@@ -31,6 +31,7 @@ import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.exception.LogServiceException;
 import teammates.common.util.Const;
+import teammates.common.util.Logger;
 
 /**
  * Holds functions for operations related to Google Cloud Logging.
@@ -151,18 +152,22 @@ public class GoogleCloudLoggingService implements LogService {
         List<FeedbackSessionLogEntry> fsLogEntries = new ArrayList<>();
         for (LogEntry entry : logEntries) {
             String fslType = entry.getLabels().get(FEEDBACK_SESSION_LOG_TYPE_LABEL);
+            Logger.getLogger().warning("This is a debug message - The fsltype retrieving in cloud logging service is: " + fslType);
             long timestamp = entry.getTimestamp();
             String entryEmail = entry.getLabels().get(FEEDBACK_SESSION_LOG_EMAIL_LABEL);
             String entryFsName = entry.getLabels().get(FEEDBACK_SESSION_LOG_NAME_LABEL);
             StudentAttributes student = studentsLogic.getStudentForEmail(courseId, entryEmail);
             FeedbackSessionAttributes fs = fsLogic.getFeedbackSession(entryFsName, courseId);
             if (student == null || fs == null) {
+                Logger.getLogger().warning("This is a debug message - student is null and fs is null for fsltype: " + fslType);
                 // If the student email or feedback session retrieved from the logs are invalid, discard it
                 continue;
             }
             if (!fslType.equals(Const.FeedbackSessionLogTypes.ACCESS)
                     && !fslType.equals(Const.FeedbackSessionLogTypes.SUBMISSION)) {
                 // If the feedback session log type retrieved from the logs is invalid, discard it
+                Logger.getLogger().warning("This is a debug message - fsltype is not access or submission but:  " + fslType);
+
                 continue;
             }
             FeedbackSessionLogEntry fslEntry = new FeedbackSessionLogEntry(student, fs, fslType, timestamp);

@@ -54,7 +54,8 @@ public enum ResourceEndpoints {
     SEARCH_COMMENTS(ResourceURIs.SEARCH_COMMENTS),
     SEARCH_INSTRUCTORS(ResourceURIs.SEARCH_INSTRUCTORS),
     SEARCH_STUDENTS(ResourceURIs.SEARCH_STUDENTS),
-    TRACK_SESSION(ResourceURIs.TRACK_SESSION);
+    TRACK_SESSION(ResourceURIs.TRACK_SESSION),
+    SESSION_LOGS(ResourceURIs.SESSION_LOGS);
     //CHECKSTYLE.ON:JavadocVariable
 
     private final String url;
